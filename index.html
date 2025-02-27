@@ -106,10 +106,8 @@
             html += '</table>';
             container.innerHTML = html;
         }
-		
-		setTimeout(date,10)
-		
-		function date(){
+	
+	function date(){
 			var d=new Date() //获取当前时间
 			var date=[d.getFullYear(),d.getMonth()+1,d.getDate()] //获取当前时间的年、月、日
 			if (date[1]<10){
@@ -127,7 +125,11 @@
 					content[i].style.fontWeight='bolder' //将当前内容的字体加粗
 				}
 			}
-		}
+		}	
+	setTimeout(date,10)
+	setTimeout("location.reload()",1000)
+		
+		
 	    /*var td=document.getElementsByTagName('td') //获取所有的td
 	    for(var i=0;i<td.length;i++){ //遍历所有的td
 	        td[i].onclick=function(){ //点击td时
