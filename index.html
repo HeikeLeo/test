@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBA赛程</title>
+    <style>
+        table {
+		        width: 100%; /* 表格宽度为100% */
+		        border-collapse: collapse; /* 合并边框 */
+		    }
+		th, td {
+			border: 1px solid #ddd; /* 边框样式 */
+			padding: 8px 0px; /* 内边距 */
+			text-align: center; /* 左对齐 */
+			font-size: 90%; /* 字体大小 */
+		}
+		h1{
+			width: 100%; /* 表格宽度为100% */
+			text-align: center; /* 居中对齐 */
+			font-size: 130%; /* 字体大小 */
+		}
+		#header {
+			background-color: #f2f2f2; /* 表头背景色 */
+		}
+		tbody tr:hover{
+			background-color: #fcf2e0; /* 鼠标悬停时的背景色 */
+		}
+    </style>
+</head>
+<body>
+	<h1 id="title">中国男子篮球职业联赛(CBA)赛程</h1>
+    <table id="scheduleTable">
+        <thead>
+            <tr id="header">
+                <th>轮次</th>
+                <th>日期</th>
+                <th>时间</th>
+                <th>主队</th>
+                <th>客队</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 表格内容将通过JavaScript动态生成 -->
+        </tbody>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+        // 获取当前日期，格式化为YYYY年MM月DD日
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+		
+		// 定义需要突出显示的关键词
+		const keywords = ["广东", "广州", "深圳"];
+
+		// 判断某支球队是否需要突出显示
+		function shouldHighlight(team) {
+			return keywords.some(keyword => team.includes(keyword));
+		}
+
+        // 读取CSV文件并生成表格
+        function loadCSV() {
+            // const csvFilePath = 'cba赛程（官网）.csv'; // CSV文件路径
+			const csvFilePath = 'cba赛程（官网）.csv?t=' + new Date().getTime(); // CSV文件路径
+            Papa.parse(csvFilePath, {
+                download: true,
+                header: true,
+				skipEmptyLines: true, // 自动跳过空行
+                dynamicTyping: true,
+                complete: function(results) {
+                    const data = results.data;
+                    const tableBody = document.querySelector('#scheduleTable tbody');
+                    const today = getTodayDate();
+
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+						// console.log(row)
+                        if (row.日期 === today) {
+							tr.style.fontWeight='bolder'
+							tr.style.backgroundColor='pink'
+                        }
+						else if(shouldHighlight(row.主队) || shouldHighlight(row.客队)){
+							tr.style.fontWeight='bolder'
+							tr.style.backgroundColor='#e3fbfc'
+						}
+						
+                        tr.innerHTML = `
+                            <td>${row.轮次}</td>
+                            <td>${row.日期}</td>
+                            <td>${row.时间}</td>
+                            <td>${row.主队}</td>
+                            <td>${row.客队}</td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+                }
+            });
+        }
+
+        // 页面加载完成后执行
+        window.onload = loadCSV;
+    </script>
+</body>
+</html>
