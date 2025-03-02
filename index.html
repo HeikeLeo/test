@@ -67,6 +67,7 @@
             Papa.parse(csvFilePath, {
                 download: true,
                 header: true,
+				skipEmptyLines: true, // 自动跳过空行
                 dynamicTyping: true,
                 complete: function(results) {
                     const data = results.data;
